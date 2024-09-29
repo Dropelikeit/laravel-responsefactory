@@ -1,0 +1,9 @@
+.composer.lock
+.idea
+.phpunit.result.cache
+vendor
+.phpunit.cache
+tmp
+build
+tests/Features/data
+tests/Units/Http/metadata

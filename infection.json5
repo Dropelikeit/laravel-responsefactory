@@ -1,0 +1,21 @@
+{
+    "$schema": "vendor/infection/infection/resources/schema.json",
+    "source": {
+        "directories": [
+            "src"
+        ],
+        "excludes": [
+            "ServiceProvider"
+        ]
+    },
+    "mutators": {
+        "@default": true
+    },
+    "logs": {
+        "html": "build/infection/infection.html",
+        "summary": "build/infection/summary.log",
+        "json": "build/infection/infection-log.json",
+        "perMutator": "build/infection/per-mutator.md",
+        "summaryJson": "build/infection/summary.json"
+    }
+}
