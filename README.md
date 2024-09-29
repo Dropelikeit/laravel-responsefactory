@@ -6,7 +6,7 @@
 [![Latest Stable Version](https://poser.pugx.org/dropelikeit/laravel-responsefactory/v/stable)](https://packagist.org/packages/dropelikeit/laravel-responsefactory)
 [![License](https://poser.pugx.org/dropelikeit/laravel-responsefactory/license)](https://packagist.org/packages/dropelikeit/laravel-responsefactory)
 [![composer.lock](https://poser.pugx.org/dropelikeit/laravel-responsefactory/composerlock)](https://packagist.org/packages/dropelikeit/laravel-responsefactory)
-[![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2FDropelikeit%2Flaravel-responsefactory%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/Dropelikeit/laravel-responsefactory/master)
+[![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Flaravel-responsefactory)](https://dashboard.stryker-mutator.io/reports/laravel-responsefactory)
 
 # ResponseFactory for Laravel
 

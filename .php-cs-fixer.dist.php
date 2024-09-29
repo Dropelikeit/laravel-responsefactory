@@ -68,7 +68,7 @@ return $config
         'whitespace_after_comma_in_array' => true,
     ])
     ->setFinder(PhpCsFixer\Finder::create()
-        ->exclude(['vendor', 'tests/Unit/Http/Responses/metadata'])
+        ->exclude(['vendor', 'tests/Units/Http/metadata'])
         ->in(__DIR__)
     )
     ;
