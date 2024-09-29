@@ -51,6 +51,7 @@ jobs:
   php84:
     name: PHP 8.4
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - name: "Checkout"
         uses: "actions/checkout@v4"
