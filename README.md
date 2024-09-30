@@ -76,11 +76,37 @@ It is the first stable version, therefore it make no sense to read an upgrade gu
 ## Collaborators
 
 <!-- readme: collaborators -start -->
+<table>
+	<tbody>
+		<tr>
+            <td align="center">
+                <a href="https://github.com/Dropelikeit">
+                    <img src="https://avatars.githubusercontent.com/u/13794109?v=4" width="100;" alt="Dropelikeit"/>
+                    <br />
+                    <sub><b>Marcel Strahl</b></sub>
+                </a>
+            </td>
+		</tr>
+	<tbody>
+</table>
 <!-- readme: collaborators -end -->
 
 ## Contributors
 
 <!-- readme: contributors -start -->
+<table>
+	<tbody>
+		<tr>
+            <td align="center">
+                <a href="https://github.com/Dropelikeit">
+                    <img src="https://avatars.githubusercontent.com/u/13794109?v=4" width="100;" alt="Dropelikeit"/>
+                    <br />
+                    <sub><b>Marcel Strahl</b></sub>
+                </a>
+            </td>
+		</tr>
+	<tbody>
+</table>
 <!-- readme: contributors -end -->
 
 # Contribution
