@@ -71,6 +71,18 @@ It is the first stable version, therefore it make no sense to read an upgrade gu
 * [Configuration](docs/configuration.md)
 * [ResponseFactory](docs/response-factory.md)
 
+---
+
+## Collaborators
+
+<!-- readme: collaborators -start -->
+<!-- readme: collaborators -end -->
+
+## Contributors
+
+<!-- readme: contributors -start -->
+<!-- readme: contributors -end -->
+
 # Contribution
 
 ---
