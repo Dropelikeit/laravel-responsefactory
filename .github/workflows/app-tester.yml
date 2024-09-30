@@ -1,4 +1,4 @@
-name: "CI Tests"
+name: "App tester"
 
 on:
     pull_request:
