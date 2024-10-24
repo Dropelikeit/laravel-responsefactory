@@ -1,5 +1,5 @@
-![Gitworkflow](https://github.com/Dropelikeit/laravel-responsefactory/actions/workflows/ci.yml/badge.svg)
-[![Coverage Status](https://coveralls.io/repos/github/Dropelikeit/laravel-responsefactory/badge.svg?branch=master)](https://coveralls.io/github/Dropelikeit/laravel-responsefactory?branch=master)
+[![Library tester](https://github.com/Dropelikeit/laravel-responsefactory/actions/workflows/app-tester.yml/badge.svg)](https://github.com/Dropelikeit/laravel-responsefactory/actions/workflows/app-tester.yml)
+[![Coverage Status](https://coveralls.io/repos/github/Dropelikeit/laravel-responsefactory/badge.svg?branch=main)](https://coveralls.io/github/Dropelikeit/laravel-responsefactory?branch=main)
 [![PHP Version Require](http://poser.pugx.org/dropelikeit/laravel-responsefactory/require/php)](https://packagist.org/packages/dropelikeit/laravel-responsefactory)
 [![Monthly Downloads](https://poser.pugx.org/dropelikeit/laravel-responsefactory/d/monthly)](https://packagist.org/packages/dropelikeit/laravel-responsefactory)
 [![Daily Downloads](https://poser.pugx.org/dropelikeit/laravel-responsefactory/d/daily)](https://packagist.org/packages/dropelikeit/laravel-responsefactory)
