@@ -26,9 +26,11 @@ JMS-Serializer: [https://github.com/schmittjoh/serializer](https://github.com/sc
  ```
 
 ### Support note
-| Laravel |        PHP        | Package Version |    Status     |
-|:-------:|:-----------------:|:---------------:|:-------------:|
-|   11    |        8.3        |     v1.x.x      |    Support    |
+| Laravel |    PHP    | Package Version | Status  |
+|:-------:|:---------:|:---------------:|:-------:|
+|   11    |    8.3    |     v1.x.x      | Support |
+|   11    |    8.3    |     v1.x.x      | Support |
+|   11    | 8.3 + 8.4 |     v1.x.x      | Support |
 
 ### How to use
 
