@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Dropelikeit\ResponseFactory\Dtos\Services;
 
 use Dropelikeit\ResponseFactory\Contracts\Dtos\Services\Input;
+use Override;
 use Psr\Http\Message\StreamInterface;
 
 /**
@@ -22,6 +23,7 @@ final readonly class StreamInput implements Input
         return new self(value: $stream);
     }
 
+    #[Override]
     public function getValue(): StreamInterface
     {
         return $this->value;

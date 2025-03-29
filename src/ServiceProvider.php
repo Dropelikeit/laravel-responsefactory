@@ -19,6 +19,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
+use Override;
 use Webmozart\Assert\Assert;
 
 /**
@@ -36,6 +37,7 @@ final class ServiceProvider extends BaseServiceProvider
     /**
      * @description Register any application services.
      */
+    #[Override]
     public function register(): void
     {
         $this->mergeConfigFrom(self::CONFIGURATION_DIR_PATH, self::CONFIGURATION_KEY_PACKAGE);
@@ -86,12 +88,7 @@ final class ServiceProvider extends BaseServiceProvider
 
         $this->app->bind(ResponseFactoryContract::class, ResponseFactory::class);
 
-        $this->app->bind(self::RESPONSE_FACTORY_CONTAINER_KEY, static function (Application $app): ResponseFactory {
-            $responseFactory = $app->get(ResponseFactory::class);
-            Assert::isInstanceOf($responseFactory, ResponseFactory::class);
-
-            return $responseFactory;
-        });
+        $this->app->bind(self::RESPONSE_FACTORY_CONTAINER_KEY, static fn (Application $app): ResponseFactory => $app->get(ResponseFactory::class));
     }
 
     /**

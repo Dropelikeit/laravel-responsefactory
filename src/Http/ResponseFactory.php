@@ -16,6 +16,7 @@ use Illuminate\Http\Response as LaravelResponse;
 use function in_array;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
+use Override;
 use Symfony\Component\HttpFoundation\Response;
 use Webmozart\Assert\Assert;
 
@@ -50,16 +51,19 @@ final class ResponseFactory implements ResponseFactoryContract
     /**
      * @psalm-param Code::HTTP_CODE_* $code
      */
+    #[Override]
     public function withStatusCode(int $code): void
     {
         $this->status = $code;
     }
 
+    #[Override]
     public function withContext(SerializationContext $context): void
     {
         $this->context = $context;
     }
 
+    #[Override]
     public function withSerializeType(string $serializeType): ResponseFactoryContract
     {
         if (!in_array($serializeType, [
@@ -76,6 +80,7 @@ final class ResponseFactory implements ResponseFactoryContract
         return $instance;
     }
 
+    #[Override]
     public function create(object $jmsResponse): Response
     {
         $initialType = $this->getInitialType($jmsResponse);
@@ -91,6 +96,7 @@ final class ResponseFactory implements ResponseFactoryContract
         return $this->getResponse($content);
     }
 
+    #[Override]
     public function createFromArray(array $jmsResponse): Response
     {
         $content = $this->serializer->serialize($jmsResponse, $this->serializeType, $this->context);
@@ -99,6 +105,7 @@ final class ResponseFactory implements ResponseFactoryContract
         return $this->getResponse($content);
     }
 
+    #[Override]
     public function createSilent(): Response
     {
         return new LaravelResponse(status: Code::HTTP_CODE_NO_CONTENT);
@@ -107,6 +114,7 @@ final class ResponseFactory implements ResponseFactoryContract
     /**
      * @psalm-param non-empty-string $filename
      */
+    #[Override]
     public function createByFile(Input $input, string $filename): Response
     {
         $mimetype = $this->fileInformationDetector->detect($input);

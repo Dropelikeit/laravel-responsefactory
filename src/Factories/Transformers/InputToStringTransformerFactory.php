@@ -13,12 +13,14 @@ use Dropelikeit\ResponseFactory\Transformers\StreamInputToStringTransformer;
 use Dropelikeit\ResponseFactory\Transformers\StringInputToStringTransformer;
 
 use function get_class;
+use Override;
 
 /**
  * @author Marcel Strahl <info@marcel-strahl.de>
  */
 final class InputToStringTransformerFactory implements InputToStringTransformerFactoryContract
 {
+    #[Override]
     public function factorize(Input $input): InputTransformer
     {
         $class = get_class($input);

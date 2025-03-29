@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Dropelikeit\ResponseFactory\Dtos\Services;
 
 use Dropelikeit\ResponseFactory\Contracts\Dtos\Services\Input;
+use Override;
 use Webmozart\Assert\Assert;
 
 /**
@@ -30,6 +31,7 @@ final readonly class StringInput implements Input
     /**
      * @psalm-return non-empty-string
      */
+    #[Override]
     public function getValue(): string
     {
         return $this->value;
