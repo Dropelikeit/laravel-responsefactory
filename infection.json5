@@ -19,7 +19,7 @@
         "summaryJson": "build/infection/summary.json",
         "github": true,
         "stryker": {
-            "badge": "master"
+            "badge": "main"
         }
     }
 }
