@@ -2,7 +2,7 @@
   "name": "dropelikeit/laravel-responsefactory",
   "description": "A nice answer factory for Laravel based on the jms/serializer",
   "keywords": ["Laravel", "JMS Serializer", "JMS", "Response", "Factory"],
-  "version": "1.0.0",
+  "version": "2.0.1",
   "minimum-stability": "stable",
   "license": "MIT",
   "authors": [
