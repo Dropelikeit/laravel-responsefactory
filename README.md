@@ -11,10 +11,11 @@
 
 # ResponseFactory for Laravel
 
-The ResponseFactory is a successor to the [laravel-jms-serializer](https://github.com/Dropelikeit/laravel-jms-serializer) 
-package that focused on this. Using the JMS serializer 
-within the ResponseFactory to create Laravel responses and thus remain in the OOP environment and 
-not use functions or own response objects within the controller. In addition, it should be ensured that everything is 
+The ResponseFactory is a successor to
+the [laravel-jms-serializer](https://github.com/Dropelikeit/laravel-jms-serializer)
+package that focused on this. Using the JMS serializer
+within the ResponseFactory to create Laravel responses and thus remain in the OOP environment and
+not use functions or own response objects within the controller. In addition, it should be ensured that everything is
 processed in an object-oriented manner up to the output.
 
 JMS-Serializer: [https://github.com/schmittjoh/serializer](https://github.com/schmittjoh/serializer)
@@ -26,15 +27,17 @@ JMS-Serializer: [https://github.com/schmittjoh/serializer](https://github.com/sc
  ```
 
 ### Support note
-| Laravel |    PHP    | Package Version | Status  |
-|:-------:|:---------:|:---------------:|:-------:|
-|   11    |    8.3    |     v1.x.x      | Support |
-|   11    |    8.3    |     v1.x.x      | Support |
-|   11    | 8.3 + 8.4 |     v1.x.x      | Support |
+
+| Laravel |    PHP    | Package Version |       Status        |
+|:-------:|:---------:|:---------------:|:-------------------:|
+|   11    |    8.3    |     v1.x.x      | No longer supported |
+|   11    |    8.3    |     v1.x.x      | No longer supported |
+|   11    | 8.3 + 8.4 |     v1.x.x      | No longer supported |
+|   12    | 8.3 + 8.4 |     v2.x.x      |       Support       |
 
 ### How to use
 
-Laravel uses Package Auto-Discovery, so you do not need to add the service provider manually. 
+Laravel uses Package Auto-Discovery, so you do not need to add the service provider manually.
 
 For example, to use the ResponseFactory in a controller, simply insert the ResponseFactory in the constructor.
 
@@ -66,7 +69,8 @@ Publish the ResponseFactory Config with the command
 After that you will see a config file in your config folder named "responsefactory.php".
 
 ## Upgrade
-It is the first stable version, therefore it make no sense to read an upgrade guide. 
+
+It is the first stable version, therefore it make no sense to read an upgrade guide.
 
 ## Documentation
 

@@ -7,6 +7,7 @@ use Dropelikeit\ResponseFactory\Contracts\Decorators\MimetypeFromFileInformation
 use Dropelikeit\ResponseFactory\Contracts\Dtos\Services\Input;
 use Dropelikeit\ResponseFactory\Contracts\Factories\Transformers\InputToStringTransformerFactory;
 use Dropelikeit\ResponseFactory\Contracts\Services\MimeTypeDetector as MimeTypeDetectorContract;
+use Override;
 
 /**
  * @author Marcel Strahl <info@marcel-strahl.de>
@@ -23,6 +24,7 @@ final readonly class MimeTypeDetector implements MimeTypeDetectorContract
     /**
      * @psalm-return non-empty-string
      */
+    #[Override]
     public function detect(Input $toDetect): string
     {
         $transformer = $this->inputToStringTransformerFactory->factorize($toDetect);

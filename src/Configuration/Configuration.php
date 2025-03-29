@@ -7,6 +7,7 @@ use Dropelikeit\ResponseFactory\Contracts\Configuration\Configuration as Configu
 use Dropelikeit\ResponseFactory\Contracts\Configuration\CustomHandlerConfiguration;
 use Dropelikeit\ResponseFactory\Exceptions\MissingRequiredItems;
 use Dropelikeit\ResponseFactory\Exceptions\SerializeType;
+use Override;
 use Webmozart\Assert\Assert;
 
 /**
@@ -102,11 +103,13 @@ final readonly class Configuration implements ConfigurationContract
     /**
      * @psalm-return non-empty-string
      */
+    #[Override]
     public function getCacheDir(): string
     {
         return $this->cacheDir;
     }
 
+    #[Override]
     public function shouldSerializeNull(): bool
     {
         return $this->shouldSerializeNull;
@@ -115,16 +118,19 @@ final readonly class Configuration implements ConfigurationContract
     /**
      * @psalm-return ConfigurationContract::SERIALIZE_TYPE_*
      */
+    #[Override]
     public function getSerializeType(): string
     {
         return $this->serializeType;
     }
 
+    #[Override]
     public function debug(): bool
     {
         return $this->debug;
     }
 
+    #[Override]
     public function shouldAddDefaultHeaders(): bool
     {
         return $this->addDefaultHandlers;
@@ -133,6 +139,7 @@ final readonly class Configuration implements ConfigurationContract
     /**
      * @return array<int, CustomHandlerConfiguration|class-string>
      */
+    #[Override]
     public function getCustomHandlers(): array
     {
         return $this->customHandlers;

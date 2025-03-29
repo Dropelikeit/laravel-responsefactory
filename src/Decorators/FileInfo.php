@@ -6,8 +6,9 @@ namespace Dropelikeit\ResponseFactory\Decorators;
 use Dropelikeit\ResponseFactory\Contracts\Decorators\MimetypeFromFileInformationDetector;
 use Dropelikeit\ResponseFactory\Dtos\Decorators\Mimetype;
 use const FILEINFO_MIME_TYPE;
-
 use finfo;
+
+use Override;
 
 final readonly class FileInfo implements MimetypeFromFileInformationDetector
 {
@@ -21,6 +22,7 @@ final readonly class FileInfo implements MimetypeFromFileInformationDetector
     /**
      * @psalm-param non-empty-string $content
      */
+    #[Override]
     public function fetchMimetypeByGivenString(string $content): Mimetype
     {
         return Mimetype::createFromType($this->fileInformation->buffer($content));
