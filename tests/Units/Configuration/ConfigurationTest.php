@@ -52,7 +52,7 @@ final class ConfigurationTest extends TestCase
 
         self::assertEquals($config['serialize_null'], $configTest->shouldSerializeNull());
         self::assertEquals(sprintf('%s%s', $config['cache_dir'], '/serializer/'), $configTest->getCacheDir());
-        self::assertEquals($config['serialize_type'], $configTest->getSerializeType());
+        self::assertEquals($config['serialize_type'], $configTest->getSerializeType()->value);
         self::assertEquals($config['debug'], $configTest->debug());
         self::assertTrue($configTest->shouldAddDefaultHeaders());
         self::assertCount(0, $configTest->getCustomHandlers());

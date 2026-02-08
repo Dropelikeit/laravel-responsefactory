@@ -4,11 +4,13 @@ declare(strict_types=1);
 namespace Dropelikeit\ResponseFactory\Tests\Features;
 
 use Dropelikeit\ResponseFactory\Contracts\Http\ResponseFactory as ResponseFactoryContract;
+use Dropelikeit\ResponseFactory\Enums\SerializeTypeEnum;
 use Dropelikeit\ResponseFactory\Http\ResponseFactory;
 use Dropelikeit\ResponseFactory\ServiceProvider;
 use Illuminate\Config\Repository;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Storage;
+use Override;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -16,17 +18,18 @@ final class ServiceProviderTest extends TestCase
 {
     private readonly Application $application;
 
+    #[Override]
     public function setUp(): void
     {
         parent::setUp();
 
         $configRepository = $this
-            ->getMockBuilder(Repository::class)
+            ->getMockBuilder(className: Repository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $configRepository
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('set')
             ->with('responsefactory', [
                 'serialize_null' => true,
@@ -37,18 +40,24 @@ final class ServiceProviderTest extends TestCase
             ]);
 
         $configRepository
-            ->expects(self::exactly(6))
+            ->expects($this->exactly(6))
             ->method('get')
-            ->willReturnOnConsecutiveCalls([], true, 'json', false, true, []);
+            ->willReturnOnConsecutiveCalls([], true, SerializeTypeEnum::JSON, false, true, []);
 
-        Storage::shouldReceive('exists')->once()->with(__DIR__ . '/data/storage/framework/cache/data')->andReturn(true);
+        Storage::shouldReceive('disk')
+            ->andReturnSelf();
+
+        Storage::shouldReceive('exists')
+            ->once()
+            ->with(__DIR__ . '/data/storage/framework/cache/data')
+            ->andReturn(true);
 
         $this->application = new Application();
         $this->application->useStoragePath(__DIR__ . '/data/storage');
 
-        $this->application->bind('config', fn () => $configRepository);
+        $this->application->bind(abstract: 'config', concrete: fn () => $configRepository);
 
-        $this->application->register(ServiceProvider::class);
+        $this->application->register(provider: ServiceProvider::class);
     }
 
     #[Test]
@@ -56,7 +65,7 @@ final class ServiceProviderTest extends TestCase
     {
         $responseFactory = $this->application->get('ResponseFactory');
 
-        $this->assertInstanceOf(ResponseFactoryContract::class, $responseFactory);
+        $this->assertInstanceOf(expected: ResponseFactoryContract::class, actual: $responseFactory);
     }
 
     #[Test]
@@ -64,6 +73,6 @@ final class ServiceProviderTest extends TestCase
     {
         $responseFactory = $this->application->get(ResponseFactory::class);
 
-        $this->assertInstanceOf(ResponseFactoryContract::class, $responseFactory);
+        $this->assertInstanceOf(expected: ResponseFactoryContract::class, actual: $responseFactory);
     }
 }

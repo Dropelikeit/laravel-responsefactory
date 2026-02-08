@@ -3,11 +3,17 @@ declare(strict_types=1);
 
 namespace Dropelikeit\ResponseFactory\Configuration;
 
+use function array_diff;
+use function array_keys;
 use Dropelikeit\ResponseFactory\Contracts\Configuration\Configuration as ConfigurationContract;
 use Dropelikeit\ResponseFactory\Contracts\Configuration\CustomHandlerConfiguration;
+use Dropelikeit\ResponseFactory\Enums\SerializeTypeEnum;
 use Dropelikeit\ResponseFactory\Exceptions\MissingRequiredItems;
 use Dropelikeit\ResponseFactory\Exceptions\SerializeType;
+
+use function implode;
 use Override;
+use function sprintf;
 use Webmozart\Assert\Assert;
 
 /**
@@ -15,6 +21,8 @@ use Webmozart\Assert\Assert;
  */
 final readonly class Configuration implements ConfigurationContract
 {
+    private const string CACHE_PATH_FORMAT = '%s%s';
+
     /**
      * @psalm-var non-empty-string
      */
@@ -30,16 +38,13 @@ final readonly class Configuration implements ConfigurationContract
      */
     private function __construct(
         private bool $shouldSerializeNull,
-        /**
-         * @psalm-var ConfigurationContract::SERIALIZE_TYPE_*
-         */
-        private string $serializeType,
+        private SerializeTypeEnum $serializeType,
         private bool $debug,
         private bool $addDefaultHandlers,
         string $cacheDir,
         array $customHandlers,
     ) {
-        $cacheDir = sprintf('%s%s', $cacheDir, self::CACHE_DIR);
+        $cacheDir = sprintf(self::CACHE_PATH_FORMAT, $cacheDir, self::CACHE_DIR);
 
         $this->cacheDir = $cacheDir;
         $this->customHandlers = $customHandlers;
@@ -61,34 +66,32 @@ final readonly class Configuration implements ConfigurationContract
             self::KEY_DEBUG,
             self::KEY_ADD_DEFAULT_HANDLERS,
             self::KEY_CUSTOM_HANDLERS,
-        ], array_keys($config));
+        ], array_keys(array: $config));
 
-        if (!empty($missing)) {
+        if ($missing !== []) {
             throw MissingRequiredItems::fromConfig(implode(',', $missing));
         }
 
-        $serializeType = $config[self::KEY_SERIALIZE_TYPE];
-        if (!in_array($serializeType, [
-            self::SERIALIZE_TYPE_JSON,
-            self::SERIALIZE_TYPE_XML,
-        ], true)) {
-            throw SerializeType::fromUnsupportedSerializeType($serializeType);
+        $configurationSerializeType = $config[self::KEY_SERIALIZE_TYPE];
+        $serializeType = SerializeTypeEnum::tryFrom(value: $configurationSerializeType);
+        if (!$serializeType) {
+            throw SerializeType::fromUnsupportedSerializeType(type: $configurationSerializeType);
         }
 
         $serializeNull = $config[self::KEY_SERIALIZE_NULL];
-        Assert::boolean($serializeNull);
+        Assert::boolean(value: $serializeNull);
 
         $debug = $config[self::KEY_DEBUG];
-        Assert::boolean($debug);
+        Assert::boolean(value: $debug);
 
         $addDefaultHandlers = $config[self::KEY_ADD_DEFAULT_HANDLERS];
-        Assert::boolean($addDefaultHandlers);
+        Assert::boolean(value: $addDefaultHandlers);
 
         $cacheDir = $config[self::KEY_CACHE_DIR];
-        Assert::string($cacheDir);
+        Assert::string(value: $cacheDir);
 
         $customHandlers = $config[self::KEY_CUSTOM_HANDLERS];
-        Assert::isArray($customHandlers);
+        Assert::isArray(value: $customHandlers);
 
         return new self(
             shouldSerializeNull: $serializeNull,
@@ -115,11 +118,8 @@ final readonly class Configuration implements ConfigurationContract
         return $this->shouldSerializeNull;
     }
 
-    /**
-     * @psalm-return ConfigurationContract::SERIALIZE_TYPE_*
-     */
     #[Override]
-    public function getSerializeType(): string
+    public function getSerializeType(): SerializeTypeEnum
     {
         return $this->serializeType;
     }

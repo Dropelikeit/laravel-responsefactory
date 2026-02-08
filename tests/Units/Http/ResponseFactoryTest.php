@@ -6,6 +6,7 @@ namespace Dropelikeit\ResponseFactory\Tests\Units\Http;
 use Dropelikeit\ResponseFactory\Contracts\Configuration\Configuration;
 use Dropelikeit\ResponseFactory\Contracts\Services\MimeTypeDetector;
 use Dropelikeit\ResponseFactory\Dtos\Services\StringInput;
+use Dropelikeit\ResponseFactory\Enums\SerializeTypeEnum;
 use Dropelikeit\ResponseFactory\Exceptions\SerializeType;
 use Dropelikeit\ResponseFactory\Factories\Http\SerializerFactory;
 use Dropelikeit\ResponseFactory\Http\ResponseFactory;
@@ -18,6 +19,7 @@ use Illuminate\Http\Response as LaravelResponse;
 use InvalidArgumentException;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -35,39 +37,40 @@ final class ResponseFactoryTest extends TestCase
     private readonly MockObject&SerializerInterface $serializer;
     private readonly MockObject&MimeTypeDetector $mimeTypeDetector;
 
+    #[Override]
     public function setUp(): void
     {
         parent::setUp();
 
         $this->config = $this
-            ->getMockBuilder(Configuration::class)
+            ->getMockBuilder(className: Configuration::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->serializer = $this
-            ->getMockBuilder(SerializerInterface::class)
+            ->getMockBuilder(className: SerializerInterface::class)
             ->getMock();
 
-        $this->mimeTypeDetector = $this->getMockBuilder(MimeTypeDetector::class)->getMock();
+        $this->mimeTypeDetector = $this->getMockBuilder(className: MimeTypeDetector::class)->getMock();
     }
 
     #[Test]
     public function canCreateResponse(): void
     {
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getCacheDir')
             ->willReturn(__DIR__);
 
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('debug')
             ->willReturn(true);
 
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getSerializeType')
-            ->willReturn(Configuration::SERIALIZE_TYPE_JSON);
+            ->willReturn(SerializeTypeEnum::JSON);
 
         $responseFactory = new ResponseFactory(
             (new SerializerFactory())->getSerializer($this->config),
@@ -85,19 +88,19 @@ final class ResponseFactoryTest extends TestCase
     public function canCreateFromArrayIterator(): void
     {
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getCacheDir')
             ->willReturn(__DIR__);
 
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('debug')
             ->willReturn(true);
 
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getSerializeType')
-            ->willReturn(Configuration::SERIALIZE_TYPE_JSON);
+            ->willReturn(SerializeTypeEnum::JSON);
 
         $responseFactory = new ResponseFactory(
             (new SerializerFactory())->getSerializer($this->config),
@@ -115,19 +118,19 @@ final class ResponseFactoryTest extends TestCase
     public function canCreateJsonResponseFromArray(): void
     {
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getCacheDir')
             ->willReturn(__DIR__);
 
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('debug')
             ->willReturn(true);
 
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getSerializeType')
-            ->willReturn(Configuration::SERIALIZE_TYPE_JSON);
+            ->willReturn(SerializeTypeEnum::JSON);
 
         $responseFactory = new ResponseFactory(
             (new SerializerFactory())->getSerializer($this->config),
@@ -148,19 +151,19 @@ final class ResponseFactoryTest extends TestCase
     public function canCreateXmlResponseFromArray(): void
     {
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getCacheDir')
             ->willReturn(__DIR__);
 
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('debug')
             ->willReturn(true);
 
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getSerializeType')
-            ->willReturn('xml');
+            ->willReturn(SerializeTypeEnum::XML);
 
         $responseFactory = new ResponseFactory(
             (new SerializerFactory())->getSerializer($this->config),
@@ -193,19 +196,19 @@ final class ResponseFactoryTest extends TestCase
     public function canChangeStatusCode(): void
     {
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getCacheDir')
             ->willReturn(__DIR__);
 
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('debug')
             ->willReturn(true);
 
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getSerializeType')
-            ->willReturn(Configuration::SERIALIZE_TYPE_JSON);
+            ->willReturn(SerializeTypeEnum::JSON);
 
         $responseFactory = new ResponseFactory(
             (new SerializerFactory())->getSerializer($this->config),
@@ -225,19 +228,19 @@ final class ResponseFactoryTest extends TestCase
     public function canUseGivenContext(): void
     {
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getCacheDir')
             ->willReturn(__DIR__);
 
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('debug')
             ->willReturn(true);
 
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getSerializeType')
-            ->willReturn(Configuration::SERIALIZE_TYPE_JSON);
+            ->willReturn(SerializeTypeEnum::JSON);
 
         $responseFactory = new ResponseFactory(
             (new SerializerFactory())->getSerializer($this->config),
@@ -251,35 +254,32 @@ final class ResponseFactoryTest extends TestCase
         self::assertEquals('{"amount":12,"text":"Hello World!","items":null}', $response->getContent());
     }
 
-    /**
-     * @psalm-param Configuration::SERIALIZE_TYPE_* $changeSerializeTypeTo
-     */
     #[Test]
     #[DataProvider(methodName: 'dataProviderCanSerializeWithSerializeType')]
-    public function canSerializeWithSerializeType(string $changeSerializeTypeTo, string $expectedResult): void
+    public function canSerializeWithSerializeType(SerializeTypeEnum $changeSerializeTypeTo, string $expectedResult): void
     {
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getCacheDir')
             ->willReturn(__DIR__);
 
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('debug')
             ->willReturn(true);
 
         $this->config
-            ->expects(self::exactly(2))
+            ->expects($this->exactly(count: 2))
             ->method('getSerializeType')
-            ->willReturn(Configuration::SERIALIZE_TYPE_JSON);
+            ->willReturn(SerializeTypeEnum::JSON);
 
         $responseFactory = new ResponseFactory(
             (new SerializerFactory())->getSerializer($this->config),
             $this->config,
             $this->mimeTypeDetector,
         );
-        $responseFactory->withContext(SerializationContext::create()->setSerializeNull(true));
-        $responseFactory = $responseFactory->withSerializeType($changeSerializeTypeTo);
+        $responseFactory->withContext(SerializationContext::create()->setSerializeNull(bool: true));
+        $responseFactory = $responseFactory->withSerializeType(serializeType: $changeSerializeTypeTo);
 
         $response = $responseFactory->create(new Dummy());
 
@@ -297,11 +297,11 @@ final class ResponseFactoryTest extends TestCase
     {
         return [
             'with_json' => [
-                Configuration::SERIALIZE_TYPE_JSON,
+                SerializeTypeEnum::JSON,
                 '{"amount":12,"text":"Hello World!"}',
             ],
             'with_xml' => [
-                Configuration::SERIALIZE_TYPE_XML,
+                SerializeTypeEnum::XML,
                 '<?xml version="1.0" encoding="UTF-8"?>
 <result>
   <amount>12</amount>
@@ -313,109 +313,92 @@ final class ResponseFactoryTest extends TestCase
     }
 
     #[Test]
-    public function canNotCreateWithUnknownSerializeType(): void
-    {
-        $this->expectException(SerializeType::class);
-
-        $this->config
-            ->expects(self::once())
-            ->method('getCacheDir')
-            ->willReturn(__DIR__);
-
-        $this->config
-            ->expects(self::once())
-            ->method('debug')
-            ->willReturn(true);
-
-        $this->config
-            ->expects(self::once())
-            ->method('getSerializeType')
-            ->willReturn(Configuration::SERIALIZE_TYPE_JSON);
-
-        $responseFactory = new ResponseFactory(
-            (new SerializerFactory())->getSerializer($this->config),
-            $this->config,
-            $this->mimeTypeDetector,
-        );
-        $responseFactory->withContext(SerializationContext::create()->setSerializeNull(true));
-        /** @phpstan-ignore-next-line */
-        $responseFactory->withSerializeType('array');
-    }
-
-    #[Test]
     public function canCreateSilentResponse(): void
     {
+        $this->config
+            ->expects($this->once())
+            ->method('getSerializeType')
+            ->willReturn(SerializeTypeEnum::JSON);
+
         $responseFactory = new ResponseFactory(
-            (new SerializerFactory())->getSerializer($this->config),
-            $this->config,
-            $this->mimeTypeDetector,
+            serializer: (new SerializerFactory())->getSerializer(config: $this->config),
+            config: $this->config,
+            fileInformationDetector: $this->mimeTypeDetector,
         );
 
         $response = $responseFactory->createSilent();
 
-        $this->assertEquals(new LaravelResponse(status: 204), $response);
+        $this->assertEquals(expected: new LaravelResponse(status: 204), actual: $response);
     }
 
     #[Test]
     public function throwInvalidArgumentExceptionIfContentOnCreateMethodIsEmpty(): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionCode(0);
-        $this->expectExceptionMessage('Expected a different value than "".');
+        $this->expectException(exception: InvalidArgumentException::class);
+        $this->expectExceptionCode(code: 0);
+        $this->expectExceptionMessage(message: 'Expected a different value than "".');
 
         $object = new Dummy();
 
         $this->config
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('getCacheDir');
 
         $this->config
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('debug');
 
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getSerializeType')
-            ->willReturn(Configuration::SERIALIZE_TYPE_JSON);
+            ->willReturn(SerializeTypeEnum::JSON);
 
         $this->serializer
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('serialize')
             ->with($object, 'json', null, null)
             ->wilLReturn('');
 
-        (new ResponseFactory($this->serializer, $this->config, $this->mimeTypeDetector))->create($object);
+        (new ResponseFactory(
+            serializer: $this->serializer,
+            config: $this->config,
+            fileInformationDetector: $this->mimeTypeDetector
+        ))->create(jmsResponse: $object);
     }
 
     #[Test]
     public function throwInvalidArgumentExceptionIfContentOnCreateFromArrayMethodIsEmpty(): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionCode(0);
-        $this->expectExceptionMessage('Expected a different value than "".');
+        $this->expectException(exception: InvalidArgumentException::class);
+        $this->expectExceptionCode(code: 0);
+        $this->expectExceptionMessage(message: 'Expected a different value than "".');
 
         $object = new Dummy();
 
         $this->config
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('getCacheDir');
 
         $this->config
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('debug');
 
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getSerializeType')
-            ->willReturn(Configuration::SERIALIZE_TYPE_JSON);
+            ->willReturn(SerializeTypeEnum::JSON);
 
         $this->serializer
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('serialize')
             ->with([$object], 'json', null)
             ->wilLReturn('');
 
-        (new ResponseFactory($this->serializer, $this->config, $this->mimeTypeDetector))->createFromArray([$object]);
+        (new ResponseFactory(
+            serializer: $this->serializer,
+            config: $this->config,
+            fileInformationDetector: $this->mimeTypeDetector
+        ))->createFromArray(jmsResponse: [$object]);
     }
 
     #[Test]
@@ -430,29 +413,29 @@ final class ResponseFactoryTest extends TestCase
         );
 
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getCacheDir')
             ->willReturn(__DIR__);
 
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('debug')
             ->willReturn(true);
 
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getSerializeType')
-            ->willReturn('xml');
+            ->willReturn(SerializeTypeEnum::XML);
 
         $responseFactory = new ResponseFactory(
-            (new SerializerFactory())->getSerializer($this->config),
-            $this->config,
-            $this->mimeTypeDetector,
+            serializer: (new SerializerFactory())->getSerializer($this->config),
+            config: $this->config,
+            fileInformationDetector: $this->mimeTypeDetector,
         );
 
-        $response = $responseFactory->create(new XmlDummy());
+        $response = $responseFactory->create(jmsResponse: new XmlDummy());
 
-        $this->assertEquals($expectedResponse, $response);
+        $this->assertEquals(expected: $expectedResponse, actual: $response);
     }
 
     #[Test]
@@ -466,19 +449,19 @@ final class ResponseFactoryTest extends TestCase
         );
 
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getCacheDir')
             ->willReturn(__DIR__);
 
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('debug')
             ->willReturn(true);
 
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getSerializeType')
-            ->willReturn('json');
+            ->willReturn(SerializeTypeEnum::JSON);
 
         $responseFactory = new ResponseFactory(
             (new SerializerFactory())->getSerializer($this->config),
@@ -486,9 +469,9 @@ final class ResponseFactoryTest extends TestCase
             $this->mimeTypeDetector,
         );
 
-        $response = $responseFactory->create(new JsonDummy());
+        $response = $responseFactory->create(jmsResponse: new JsonDummy());
 
-        $this->assertEquals($expectedResponse, $response);
+        $this->assertEquals(expected: $expectedResponse, actual: $response);
     }
 
     #[Test]
@@ -504,37 +487,37 @@ final class ResponseFactoryTest extends TestCase
             ],
         );
 
-        $stringInput = StringInput::create('{"foo": "bar"}');
+        $stringInput = StringInput::create(content: '{"foo": "bar"}');
 
         $this->mimeTypeDetector
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('detect')
             ->with($stringInput)
             ->willReturn('application/json');
 
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getCacheDir')
             ->willReturn(__DIR__);
 
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('debug')
             ->willReturn(true);
 
         $this->config
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getSerializeType')
-            ->willReturn(Configuration::SERIALIZE_TYPE_JSON);
+            ->willReturn(SerializeTypeEnum::JSON);
 
         $responseFactory = new ResponseFactory(
-            (new SerializerFactory())->getSerializer($this->config),
-            $this->config,
-            $this->mimeTypeDetector,
+            serializer: (new SerializerFactory())->getSerializer($this->config),
+            config: $this->config,
+            fileInformationDetector: $this->mimeTypeDetector,
         );
 
-        $response = $responseFactory->createByFile(StringInput::create('{"foo": "bar"}'), 'my-test.json');
+        $response = $responseFactory->createByFile(input: StringInput::create(content: '{"foo": "bar"}'), filename: 'my-test.json');
 
-        $this->assertEquals($expectedResponse, $response);
+        $this->assertEquals(expected: $expectedResponse, actual: $response);
     }
 }

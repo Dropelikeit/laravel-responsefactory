@@ -6,7 +6,7 @@ namespace Dropelikeit\ResponseFactory\Contracts\Dtos\Services;
 /**
  * @author Marcel Strahl <info@marcel-strahl.de>
  *
- * @template T
+ * @template T of mixed
  */
 interface Input
 {

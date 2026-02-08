@@ -27,11 +27,11 @@ final readonly class MimeTypeDetector implements MimeTypeDetectorContract
     #[Override]
     public function detect(Input $toDetect): string
     {
-        $transformer = $this->inputToStringTransformerFactory->factorize($toDetect);
+        $transformer = $this->inputToStringTransformerFactory->factorize(input: $toDetect);
 
-        $content = $transformer->transform($toDetect);
+        $content = $transformer->transform(toBeTransformed: $toDetect);
 
-        $mimetype = $this->mimetypeFromFileInformationDetector->fetchMimetypeByGivenString($content);
+        $mimetype = $this->mimetypeFromFileInformationDetector->fetchMimetypeByGivenString(content: $content);
 
         return $mimetype->getMimetype();
     }

@@ -16,6 +16,6 @@ final class MissingRequiredItems extends InvalidArgumentException
 
     public static function fromConfig(string $fields): self
     {
-        return new self(sprintf(self::ERROR_MESSAGE, $fields), Code::HTTP_CODE_BAD_REQUEST);
+        return new self(message: sprintf(self::ERROR_MESSAGE, $fields), code: Code::HTTP_CODE_BAD_REQUEST);
     }
 }

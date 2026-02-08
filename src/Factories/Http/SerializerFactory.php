@@ -3,15 +3,21 @@ declare(strict_types=1);
 
 namespace Dropelikeit\ResponseFactory\Factories\Http;
 
+use function assert;
+use function class_exists;
 use Dropelikeit\ResponseFactory\Contracts\Configuration\Configuration;
 use Dropelikeit\ResponseFactory\Contracts\Configuration\CustomHandlerConfiguration;
 use Dropelikeit\ResponseFactory\Contracts\Factories\Http\SerializerFactory as SerializerFactoryContract;
+use function is_string;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerBuilder;
+
 use JMS\Serializer\SerializerInterface;
+use Override;
+use function sprintf;
 use Webmozart\Assert\Assert;
 
 /**
@@ -19,18 +25,19 @@ use Webmozart\Assert\Assert;
  */
 final readonly class SerializerFactory implements SerializerFactoryContract
 {
+    #[Override]
     public function getSerializer(Configuration $config): SerializerInterface
     {
         $builder = SerializerBuilder::create()
             ->setPropertyNamingStrategy(
-                new SerializedNameAnnotationStrategy(
-                    new IdenticalPropertyNamingStrategy()
+                propertyNamingStrategy: new SerializedNameAnnotationStrategy(
+                    namingStrategy: new IdenticalPropertyNamingStrategy()
                 )
             )
             ->addDefaultListeners()
-            ->setSerializationContextFactory(static function () use ($config): SerializationContext {
+            ->setSerializationContextFactory(serializationContextFactory: static function () use ($config): SerializationContext {
                 // @codeCoverageIgnoreStart
-                return SerializationContext::create()->setSerializeNull($config->shouldSerializeNull());
+                return SerializationContext::create()->setSerializeNull(bool: $config->shouldSerializeNull());
                 // @codeCoverageIgnoreEnd
             });
 
@@ -40,28 +47,28 @@ final readonly class SerializerFactory implements SerializerFactoryContract
 
         $customHandlers = $config->getCustomHandlers();
         if ($customHandlers !== []) {
-            $builder->configureHandlers(function (HandlerRegistry $registry) use ($customHandlers): void {
+            $builder->configureHandlers(closure: function (HandlerRegistry $registry) use ($customHandlers): void {
                 foreach ($customHandlers as $customHandler) {
                     if (is_string($customHandler) && class_exists($customHandler)) {
                         $customHandler = new $customHandler();
                     }
 
                     Assert::implementsInterface(
-                        $customHandler,
-                        CustomHandlerConfiguration::class,
-                        sprintf(
+                        value: $customHandler,
+                        interface: CustomHandlerConfiguration::class,
+                        message: sprintf(
                             'Its required to implement the "%s" interface',
                             CustomHandlerConfiguration::class
                         )
                     );
                     /** @phpstan-ignore-next-line */
-                    assert($customHandler instanceof CustomHandlerConfiguration);
+                    assert(assertion: $customHandler instanceof CustomHandlerConfiguration);
 
                     $registry->registerHandler(
-                        $customHandler->getDirection(),
-                        $customHandler->getTypeName(),
-                        $customHandler->getFormat(),
-                        $customHandler->getCallable(),
+                        direction: $customHandler->getDirection(),
+                        typeName: $customHandler->getTypeName(),
+                        format: $customHandler->getFormat(),
+                        handler: $customHandler->getCallable(),
                     );
                 }
             });
@@ -69,9 +76,9 @@ final readonly class SerializerFactory implements SerializerFactoryContract
 
         $cacheDir = $config->getCacheDir();
         if ($cacheDir !== '') {
-            $builder->setCacheDir($cacheDir);
+            $builder->setCacheDir(dir: $cacheDir);
         }
 
-        return $builder->setDebug($config->debug())->build();
+        return $builder->setDebug(bool: $config->debug())->build();
     }
 }

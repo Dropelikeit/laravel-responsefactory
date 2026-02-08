@@ -4,13 +4,12 @@ declare(strict_types=1);
 namespace Dropelikeit\ResponseFactory\Contracts\Http;
 
 use Dropelikeit\ResponseFactory\Contracts\Dtos\Services\Input;
+use Dropelikeit\ResponseFactory\Enums\SerializeTypeEnum;
 use JMS\Serializer\SerializationContext;
 use Symfony\Component\HttpFoundation\Response;
 
 interface ResponseFactory
 {
-    public const string HEADER_NAME_CONTENT_TYPE = 'Content-Type';
-    public const string HEADER_VALUE_APPLICATION_XML = 'application/xml';
     public const string SERIALIZER_INITIAL_TYPE_ARRAY = 'array';
 
     /**
@@ -20,10 +19,7 @@ interface ResponseFactory
 
     public function withContext(SerializationContext $context): void;
 
-    /**
-     * @param non-empty-string $serializeType
-     */
-    public function withSerializeType(string $serializeType): self;
+    public function withSerializeType(SerializeTypeEnum $serializeType): self;
 
     public function create(object $jmsResponse): Response;
 

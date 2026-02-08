@@ -18,8 +18,8 @@ final class NotSupportedInputClassException extends RuntimeException
     public static function create(string $class): self
     {
         return new self(
-            sprintf(self::ERROR_MESSAGE, $class),
-            Code::HTTP_CODE_INTERNAL_SERVER_ERROR,
+            message: sprintf(self::ERROR_MESSAGE, $class),
+            code: Code::HTTP_CODE_INTERNAL_SERVER_ERROR,
         );
     }
 }

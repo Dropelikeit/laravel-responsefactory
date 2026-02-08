@@ -10,6 +10,7 @@ use Dropelikeit\ResponseFactory\Contracts\Factories\Transformers\InputToStringTr
 use Dropelikeit\ResponseFactory\Contracts\Http\ResponseFactory as ResponseFactoryContract;
 use Dropelikeit\ResponseFactory\Contracts\Services\MimeTypeDetector as MimeTypeDetectorContract;
 use Dropelikeit\ResponseFactory\Decorators\FileInfo;
+use Dropelikeit\ResponseFactory\Enums\SerializeTypeEnum;
 use Dropelikeit\ResponseFactory\Factories\Http\SerializerFactory;
 use Dropelikeit\ResponseFactory\Factories\Transformers\InputToStringTransformerFactory;
 use Dropelikeit\ResponseFactory\Http\ResponseFactory;
@@ -40,30 +41,30 @@ final class ServiceProvider extends BaseServiceProvider
     #[Override]
     public function register(): void
     {
-        $this->mergeConfigFrom(self::CONFIGURATION_DIR_PATH, self::CONFIGURATION_KEY_PACKAGE);
+        $this->mergeConfigFrom(path: self::CONFIGURATION_DIR_PATH, key: self::CONFIGURATION_KEY_PACKAGE);
 
         /** @var Repository $configRepository */
-        $configRepository = $this->app->get(self::LARAVEL_CONFIG_REPOSITORY_KEY);
+        $configRepository = $this->app->get(id: self::LARAVEL_CONFIG_REPOSITORY_KEY);
 
-        $cacheDir = $this->app->storagePath(self::STORAGE_PATH);
-        if (!Storage::exists($cacheDir)) {
-            Storage::makeDirectory($cacheDir);
+        $cacheDir = $this->app->storagePath(path: self::STORAGE_PATH);
+        if (!Storage::exists(path: $cacheDir)) {
+            Storage::makeDirectory(path: $cacheDir);
         }
 
         $shouldSerializeNull = (bool) $configRepository
-            ->get('responsefactory.serialize_null', true);
+            ->get(key: 'responsefactory.serialize_null', default: true);
         $serializeType = $configRepository
-            ->get('responsefactory.serialize_type', Configuration::SERIALIZE_TYPE_JSON);
+            ->get(key: 'responsefactory.serialize_type', default: SerializeTypeEnum::JSON->value);
         Assert::stringNotEmpty($serializeType);
-        $debug = (bool) $configRepository->get('laravel-jms-serializer.debug', false);
+        $debug = (bool) $configRepository->get(key: 'laravel-jms-serializer.debug', default: false);
         $addDefaultHandlers = (bool) $configRepository->get(
-            'laravel-jms-serializer.add_default_handlers',
-            true
+            key: 'laravel-jms-serializer.add_default_handlers',
+            default: true,
         );
         /** @var array<int, CustomHandlerConfiguration> $customHandlers */
-        $customHandlers = (array) $configRepository->get('laravel-jms-serializer.custom_handlers', []);
+        $customHandlers = (array) $configRepository->get(key: 'laravel-jms-serializer.custom_handlers', default: []);
 
-        $config = Configuration::fromArray([
+        $config = Configuration::fromArray(config: [
             'serialize_null' => $shouldSerializeNull,
             'cache_dir' => $cacheDir,
             'serialize_type' => $serializeType,
@@ -72,23 +73,23 @@ final class ServiceProvider extends BaseServiceProvider
             'custom_handlers' => $customHandlers,
         ]);
 
-        $this->app->bind(TransformerFactoryContract::class, InputToStringTransformerFactory::class);
-        $this->app->bind(MimetypeFromFileInformationDetector::class, FileInfo::class);
+        $this->app->bind(abstract: TransformerFactoryContract::class, concrete: InputToStringTransformerFactory::class);
+        $this->app->bind(abstract: MimetypeFromFileInformationDetector::class, concrete: FileInfo::class);
 
-        $this->app->singleton(ResponseFactory::class, static function (Application $app) use ($config): ResponseFactory {
-            $mimetypeDetector = $app->get(MimeTypeDetector::class);
-            Assert::isInstanceOf($mimetypeDetector, MimeTypeDetectorContract::class);
+        $this->app->singleton(abstract: ResponseFactory::class, concrete: static function (Application $app) use ($config): ResponseFactory {
+            $mimetypeDetector = $app->get(id: MimeTypeDetector::class);
+            Assert::isInstanceOf(value: $mimetypeDetector, class: MimeTypeDetectorContract::class);
 
             return new ResponseFactory(
-                (new SerializerFactory())->getSerializer($config),
-                $config,
-                $mimetypeDetector,
+                serializer: (new SerializerFactory())->getSerializer(config: $config),
+                config: $config,
+                fileInformationDetector: $mimetypeDetector,
             );
         });
 
-        $this->app->bind(ResponseFactoryContract::class, ResponseFactory::class);
+        $this->app->bind(abstract: ResponseFactoryContract::class, concrete: ResponseFactory::class);
 
-        $this->app->bind(self::RESPONSE_FACTORY_CONTAINER_KEY, static fn (Application $app): ResponseFactory => $app->get(ResponseFactory::class));
+        $this->app->bind(abstract: self::RESPONSE_FACTORY_CONTAINER_KEY, concrete: static fn (Application $app): ResponseFactory => $app->get(id: ResponseFactory::class));
     }
 
     /**
@@ -97,8 +98,8 @@ final class ServiceProvider extends BaseServiceProvider
     public function boot(): void
     {
         $this->publishes(
-            [self::CONFIGURATION_DIR_PATH => $this->getConfigPath()],
-            self::CONFIGURATION_KEY_PACKAGE,
+            paths: [self::CONFIGURATION_DIR_PATH => $this->getConfigPath()],
+            groups: self::CONFIGURATION_KEY_PACKAGE,
         );
     }
 
@@ -109,6 +110,6 @@ final class ServiceProvider extends BaseServiceProvider
      */
     private function getConfigPath(): string
     {
-        return config_path(self::CONFIGURATION_FILE_NAME);
+        return config_path(path: self::CONFIGURATION_FILE_NAME);
     }
 }

@@ -5,6 +5,7 @@ namespace Dropelikeit\ResponseFactory\Tests\Units;
 
 use Dropelikeit\ResponseFactory\Configuration\Configuration;
 use Dropelikeit\ResponseFactory\Contracts\Services\MimeTypeDetector;
+use Dropelikeit\ResponseFactory\Enums\SerializeTypeEnum;
 use Dropelikeit\ResponseFactory\Factories\Http\SerializerFactory;
 use Dropelikeit\ResponseFactory\Http\ResponseFactory;
 use Dropelikeit\ResponseFactory\ServiceProvider;
@@ -37,34 +38,34 @@ final class ServiceProviderTest extends TestCase
     public function canRegister(): void
     {
         $this->configRepository
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('set')
             ->with('responsefactory', [
                 'serialize_null' => true,
-                'serialize_type' => 'json', // Contracts\Config::SERIALIZE_TYPE_XML
+                'serialize_type' => 'json',
                 'debug' => false,
                 'add_default_handlers' => true,
                 'custom_handlers' => [],
             ]);
 
         $this->configRepository
-            ->expects(self::exactly(6))
+            ->expects($this->exactly(6))
             ->method('get')
-            ->willReturnOnConsecutiveCalls([], true, 'json', false, true, []);
+            ->willReturnOnConsecutiveCalls([], true, SerializeTypeEnum::JSON, false, true, []);
 
         $this->application
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('make')
             ->with('config')
             ->willReturn($this->configRepository);
 
         $this->application
-            ->expects(self::exactly(1))
+            ->expects($this->once())
             ->method('get')
             ->willReturnOnConsecutiveCalls($this->configRepository, $this->mimetypeDetector);
 
         $this->application
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('storagePath')
             ->with('framework/cache/data')
             ->willReturn('my-storage');
@@ -82,7 +83,7 @@ final class ServiceProviderTest extends TestCase
         ]);
 
         $this->application
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('singleton')
             ->with(ResponseFactory::class, static function (Application $app) use ($config): ResponseFactory {
                 $mimetypeDetector = $app->get(MimeTypeDetector::class);
@@ -95,7 +96,7 @@ final class ServiceProviderTest extends TestCase
             });
 
         $this->application
-            ->expects(self::exactly(4))
+            ->expects($this->exactly(4))
             ->method('bind');
 
         $provider = new ServiceProvider($this->application);
@@ -107,7 +108,7 @@ final class ServiceProviderTest extends TestCase
     public function canLoadConfigAtBootingApp(): void
     {
         $this->application
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('configPath')
             ->with('responsefactory.php')
             ->willReturn('my/dir');

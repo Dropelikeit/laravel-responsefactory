@@ -23,12 +23,12 @@ final class InputToStringTransformerFactory implements InputToStringTransformerF
     #[Override]
     public function factorize(Input $input): InputTransformer
     {
-        $class = get_class($input);
+        $class = get_class(object: $input);
 
         return match ($class) {
             StringInput::class => new StringInputToStringTransformer(),
             StreamInput::class => new StreamInputToStringTransformer(),
-            default => throw NotSupportedInputClassException::create($class),
+            default => throw NotSupportedInputClassException::create(class: $class),
         };
     }
 }

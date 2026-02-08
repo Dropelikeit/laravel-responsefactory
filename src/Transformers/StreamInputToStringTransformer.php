@@ -24,7 +24,7 @@ final class StreamInputToStringTransformer implements InputTransformer
     {
         $content = $toBeTransformed->getValue()->__toString();
 
-        Assert::stringNotEmpty($content);
+        Assert::stringNotEmpty(value: $content);
 
         return $content;
     }

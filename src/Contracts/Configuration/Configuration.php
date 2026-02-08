@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace Dropelikeit\ResponseFactory\Contracts\Configuration;
 
+use Dropelikeit\ResponseFactory\Enums\SerializeTypeEnum;
+
 /**
  * @author Marcel Strahl <info@marcel-strahl.de>
  */
 interface Configuration
 {
-    public const string SERIALIZE_TYPE_JSON = 'json';
-    public const string SERIALIZE_TYPE_XML = 'xml';
     public const string CACHE_DIR = '/serializer/';
 
     public const string KEY_SERIALIZE_NULL = 'serialize_null';
@@ -23,10 +23,7 @@ interface Configuration
 
     public function shouldSerializeNull(): bool;
 
-    /**
-     * @psalm-return self::SERIALIZE_TYPE_*
-     */
-    public function getSerializeType(): string;
+    public function getSerializeType(): SerializeTypeEnum;
 
     public function debug(): bool;
 

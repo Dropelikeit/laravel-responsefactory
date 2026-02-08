@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Dropelikeit\ResponseFactory\Exceptions;
 
-use Dropelikeit\ResponseFactory\Contracts\Configuration\Configuration;
 use Dropelikeit\ResponseFactory\Contracts\Http\Code;
+use Dropelikeit\ResponseFactory\Enums\SerializeTypeEnum;
 use InvalidArgumentException;
 use function sprintf;
 
@@ -18,13 +18,13 @@ final class SerializeType extends InvalidArgumentException
     public static function fromUnsupportedSerializeType(string $type): self
     {
         return new self(
-            sprintf(
+            message: sprintf(
                 self::ERROR_MESSAGE,
                 $type,
-                Configuration::SERIALIZE_TYPE_JSON,
-                Configuration::SERIALIZE_TYPE_XML
+                SerializeTypeEnum::JSON->value,
+                SerializeTypeEnum::XML->value,
             ),
-            Code::HTTP_CODE_BAD_REQUEST,
+            code: Code::HTTP_CODE_BAD_REQUEST,
         );
     }
 }
