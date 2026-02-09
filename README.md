@@ -75,6 +75,7 @@ It is the first stable version, therefore it make no sense to read an upgrade gu
 
 * [Configuration](docs/configuration.md)
 * [ResponseFactory](docs/response-factory.md)
+* [Controller Dispatcher with HandledByResponseFactory Attribute](docs/controller-dispatcher.md)
 
 ---
 

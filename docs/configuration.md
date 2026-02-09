@@ -1,5 +1,6 @@
 * [Back](../README.md)
 * [ResponseFactory](response-factory.md)
+* [Controller Dispatcher with HandledByResponseFactory Attribute](docs/controller-dispatcher.md)
 
 # Configuration
 
