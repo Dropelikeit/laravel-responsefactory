@@ -16,8 +16,8 @@ use Dropelikeit\ResponseFactory\Http\Dispatcher\ControllerDispatcher;
 use Dropelikeit\ResponseFactory\Http\ResponseFactory;
 use Dropelikeit\ResponseFactory\Services\MimeTypeDetector;
 use Illuminate\Config\Repository;
-use Illuminate\Contracts\Routing\ControllerDispatcher as ControllerDispatcherContract;
 use Illuminate\Foundation\Application;
+use Illuminate\Routing\Contracts\ControllerDispatcher as ControllerDispatcherContract;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
@@ -97,7 +97,7 @@ final class ServiceProvider extends BaseServiceProvider
             $responseFactory = $app->get(ResponseFactory::class);
             Assert::isInstanceOf($responseFactory, ResponseFactoryContract::class);
 
-            return new ControllerDispatcher($app, $responseFactory);
+            return new ControllerDispatcher(container: $app, responseFactory: $responseFactory);
         });
     }
 

@@ -164,7 +164,8 @@ final class ServiceProviderTest extends TestCase
                 if ($abstract === MimeTypeDetector::class) {
                     return $this->mimetypeDetector;
                 }
-                return null;
+
+                return;
             });
 
         $this->application
