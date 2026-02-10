@@ -1,6 +1,7 @@
 composer.lock
 .idea
 .phpunit.result.cache
+.php-cs-fixer.cache
 vendor
 .phpunit.cache
 tmp

@@ -12,10 +12,12 @@ use Dropelikeit\ResponseFactory\Contracts\Services\MimeTypeDetector as MimeTypeD
 use Dropelikeit\ResponseFactory\Decorators\FileInfo;
 use Dropelikeit\ResponseFactory\Factories\Http\SerializerFactory;
 use Dropelikeit\ResponseFactory\Factories\Transformers\InputToStringTransformerFactory;
+use Dropelikeit\ResponseFactory\Http\Dispatcher\ControllerDispatcher;
 use Dropelikeit\ResponseFactory\Http\ResponseFactory;
 use Dropelikeit\ResponseFactory\Services\MimeTypeDetector;
 use Illuminate\Config\Repository;
 use Illuminate\Foundation\Application;
+use Illuminate\Routing\Contracts\ControllerDispatcher as ControllerDispatcherContract;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
@@ -89,6 +91,14 @@ final class ServiceProvider extends BaseServiceProvider
         $this->app->bind(ResponseFactoryContract::class, ResponseFactory::class);
 
         $this->app->bind(self::RESPONSE_FACTORY_CONTAINER_KEY, static fn (Application $app): ResponseFactory => $app->get(ResponseFactory::class));
+
+        // Register the custom ControllerDispatcher
+        $this->app->bind(ControllerDispatcherContract::class, static function (Application $app): ControllerDispatcher {
+            $responseFactory = $app->get(ResponseFactory::class);
+            Assert::isInstanceOf($responseFactory, ResponseFactoryContract::class);
+
+            return new ControllerDispatcher(container: $app, responseFactory: $responseFactory);
+        });
     }
 
     /**

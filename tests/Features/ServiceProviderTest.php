@@ -4,10 +4,12 @@ declare(strict_types=1);
 namespace Dropelikeit\ResponseFactory\Tests\Features;
 
 use Dropelikeit\ResponseFactory\Contracts\Http\ResponseFactory as ResponseFactoryContract;
+use Dropelikeit\ResponseFactory\Http\Dispatcher\ControllerDispatcher;
 use Dropelikeit\ResponseFactory\Http\ResponseFactory;
 use Dropelikeit\ResponseFactory\ServiceProvider;
 use Illuminate\Config\Repository;
 use Illuminate\Foundation\Application;
+use Illuminate\Routing\Contracts\ControllerDispatcher as ControllerDispatcherContract;
 use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -65,5 +67,13 @@ final class ServiceProviderTest extends TestCase
         $responseFactory = $this->application->get(ResponseFactory::class);
 
         $this->assertInstanceOf(ResponseFactoryContract::class, $responseFactory);
+    }
+
+    #[Test]
+    public function canBuildControllerDispatcherFromServiceProvider(): void
+    {
+        $controllerDispatcher = $this->application->get(ControllerDispatcherContract::class);
+
+        $this->assertInstanceOf(ControllerDispatcher::class, $controllerDispatcher);
     }
 }
