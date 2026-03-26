@@ -336,7 +336,7 @@ final class ResponseFactoryTest extends TestCase
     {
         $this->expectException(exception: InvalidArgumentException::class);
         $this->expectExceptionCode(code: 0);
-        $this->expectExceptionMessage(message: 'Expected a different value than "".');
+        $this->expectExceptionMessage(message: 'Expected a value not identical to "".');
 
         $object = new Dummy();
 
@@ -371,7 +371,7 @@ final class ResponseFactoryTest extends TestCase
     {
         $this->expectException(exception: InvalidArgumentException::class);
         $this->expectExceptionCode(code: 0);
-        $this->expectExceptionMessage(message: 'Expected a different value than "".');
+        $this->expectExceptionMessage(message: 'Expected a value not identical to "".');
 
         $object = new Dummy();
 

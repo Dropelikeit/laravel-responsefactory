@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Dropelikeit\ResponseFactory\Tests\Units;
 
-use Dropelikeit\ResponseFactory\Configuration\Configuration;
+use Closure;
 use Dropelikeit\ResponseFactory\Contracts\Services\MimeTypeDetector;
 use Dropelikeit\ResponseFactory\Enums\SerializeTypeEnum;
 use Dropelikeit\ResponseFactory\Factories\Http\SerializerFactory;
@@ -13,6 +13,7 @@ use Illuminate\Config\Repository;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\Storage;
+use Override;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -24,6 +25,7 @@ final class ServiceProviderTest extends TestCase
     private readonly MockObject&MimeTypeDetector $mimetypeDetector;
     private ?\Illuminate\Contracts\Container\Container $oldContainer;
 
+    #[Override]
     public function setUp(): void
     {
         $this->application = $this->createMock(Application::class);
@@ -73,27 +75,10 @@ final class ServiceProviderTest extends TestCase
         Storage::shouldReceive('exists')->once()->with('my-storage')->andReturn(false);
         Storage::shouldReceive('makeDirectory')->with('my-storage')->andReturn(true);
 
-        $config = Configuration::fromArray([
-            'serialize_null' => true,
-            'cache_dir' => 'tmp',
-            'serialize_type' => 'json',
-            'debug' => false,
-            'add_default_handlers' => true,
-            'custom_handlers' => [],
-        ]);
-
         $this->application
             ->expects($this->once())
             ->method('singleton')
-            ->with(ResponseFactory::class, static function (Application $app) use ($config): ResponseFactory {
-                $mimetypeDetector = $app->get(MimeTypeDetector::class);
-
-                return new ResponseFactory(
-                    (new SerializerFactory())->getSerializer($config),
-                    $config,
-                    $mimetypeDetector
-                );
-            });
+            ->with(ResponseFactory::class, $this->isInstanceOf(className: Closure::class));
 
         $this->application
             ->expects($this->exactly(4))

@@ -52,7 +52,7 @@ final readonly class SerializerFactory implements SerializerFactoryContract
                     if (is_string($customHandler) && class_exists($customHandler)) {
                         $customHandler = new $customHandler();
                     }
-
+                    /** @psalm-suppress ArgumentTypeCoercion */
                     Assert::implementsInterface(
                         value: $customHandler,
                         interface: CustomHandlerConfiguration::class,
