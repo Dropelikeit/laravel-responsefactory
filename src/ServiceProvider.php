@@ -47,8 +47,8 @@ final class ServiceProvider extends BaseServiceProvider
         $configRepository = $this->app->get(id: self::LARAVEL_CONFIG_REPOSITORY_KEY);
 
         $cacheDir = $this->app->storagePath(path: self::STORAGE_PATH);
-        if (!Storage::exists(path: $cacheDir)) {
-            Storage::makeDirectory(path: $cacheDir);
+        if (!Storage::exists($cacheDir)) {
+            Storage::makeDirectory($cacheDir);
         }
 
         $shouldSerializeNull = (bool) $configRepository

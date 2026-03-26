@@ -52,7 +52,7 @@ final class ServiceProviderTest extends TestCase
         $this->configRepository
             ->expects($this->exactly(6))
             ->method('get')
-            ->willReturnOnConsecutiveCalls([], true, SerializeTypeEnum::JSON, false, true, []);
+            ->willReturnOnConsecutiveCalls([], true, SerializeTypeEnum::JSON->value, false, true, []);
 
         $this->application
             ->expects($this->once())

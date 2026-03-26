@@ -42,7 +42,7 @@ final class ServiceProviderTest extends TestCase
         $configRepository
             ->expects($this->exactly(6))
             ->method('get')
-            ->willReturnOnConsecutiveCalls([], true, SerializeTypeEnum::JSON, false, true, []);
+            ->willReturnOnConsecutiveCalls([], true, SerializeTypeEnum::JSON->value, false, true, []);
 
         Storage::shouldReceive('disk')
             ->andReturnSelf();
