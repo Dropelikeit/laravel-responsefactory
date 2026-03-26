@@ -1,7 +1,12 @@
 name: Release Please
 
 on:
-  push:
+  workflow_run:
+    workflows:
+      - "App tester"
+      - "Test Coveralls"
+    types:
+      - completed
     branches:
       - main
 
@@ -10,11 +15,39 @@ permissions:
 
 jobs:
   release-please:
+    # Only run when ALL triggering workflows succeeded and it was a push (not PR)
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' }}
     permissions:
       contents: write
       pull-requests: write
     runs-on: ubuntu-latest
     steps:
+      - name: Wait for all workflows to succeed
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const requiredWorkflows = ['App tester', 'Test Coveralls'];
+            const head_sha = context.payload.workflow_run.head_sha;
+
+            for (const workflowName of requiredWorkflows) {
+              const runs = await github.rest.actions.listWorkflowRuns({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: workflowName,
+                head_sha: head_sha,
+                status: 'completed',
+              });
+
+              const successRun = runs.data.workflow_runs.find(r => r.conclusion === 'success');
+              if (!successRun) {
+                core.setFailed(`Workflow "${workflowName}" has not succeeded for commit ${head_sha}`);
+                return;
+              }
+            }
+
+            core.info('All required workflows succeeded.');
+
       - uses: googleapis/release-please-action@v4
         with:
-          release-type: simple
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
