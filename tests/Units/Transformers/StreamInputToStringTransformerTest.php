@@ -6,7 +6,6 @@ namespace Dropelikeit\ResponseFactory\Tests\Units\Transformers;
 use Dropelikeit\ResponseFactory\Dtos\Services\StreamInput;
 use Dropelikeit\ResponseFactory\Transformers\StreamInputToStringTransformer;
 use InvalidArgumentException;
-use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\UsesClass;
