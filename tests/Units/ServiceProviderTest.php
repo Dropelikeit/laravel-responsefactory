@@ -3,15 +3,15 @@ declare(strict_types=1);
 
 namespace Dropelikeit\ResponseFactory\Tests\Units;
 
-use Dropelikeit\ResponseFactory\Configuration\Configuration;
+use Closure;
 use Dropelikeit\ResponseFactory\Contracts\Services\MimeTypeDetector;
-use Dropelikeit\ResponseFactory\Factories\Http\SerializerFactory;
 use Dropelikeit\ResponseFactory\Http\ResponseFactory;
 use Dropelikeit\ResponseFactory\ServiceProvider;
 use Illuminate\Config\Repository;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\Storage;
+use Override;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -23,6 +23,7 @@ final class ServiceProviderTest extends TestCase
     private readonly MockObject&MimeTypeDetector $mimetypeDetector;
     private ?\Illuminate\Contracts\Container\Container $oldContainer;
 
+    #[Override]
     public function setUp(): void
     {
         $this->application = $this->createMock(Application::class);
@@ -37,7 +38,7 @@ final class ServiceProviderTest extends TestCase
     public function canRegister(): void
     {
         $this->configRepository
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('set')
             ->with('responsefactory', [
                 'serialize_null' => true,
@@ -48,23 +49,23 @@ final class ServiceProviderTest extends TestCase
             ]);
 
         $this->configRepository
-            ->expects(self::exactly(6))
+            ->expects($this->exactly(6))
             ->method('get')
             ->willReturnOnConsecutiveCalls([], true, 'json', false, true, []);
 
         $this->application
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('make')
             ->with('config')
             ->willReturn($this->configRepository);
 
         $this->application
-            ->expects(self::exactly(1))
+            ->expects($this->exactly(1))
             ->method('get')
             ->willReturnOnConsecutiveCalls($this->configRepository, $this->mimetypeDetector);
 
         $this->application
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('storagePath')
             ->with('framework/cache/data')
             ->willReturn('my-storage');
@@ -72,30 +73,13 @@ final class ServiceProviderTest extends TestCase
         Storage::shouldReceive('exists')->once()->with('my-storage')->andReturn(false);
         Storage::shouldReceive('makeDirectory')->with('my-storage')->andReturn(true);
 
-        $config = Configuration::fromArray([
-            'serialize_null' => true,
-            'cache_dir' => 'tmp',
-            'serialize_type' => 'json',
-            'debug' => false,
-            'add_default_handlers' => true,
-            'custom_handlers' => [],
-        ]);
-
         $this->application
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('singleton')
-            ->with(ResponseFactory::class, static function (Application $app) use ($config): ResponseFactory {
-                $mimetypeDetector = $app->get(MimeTypeDetector::class);
-
-                return new ResponseFactory(
-                    (new SerializerFactory())->getSerializer($config),
-                    $config,
-                    $mimetypeDetector
-                );
-            });
+            ->with(ResponseFactory::class, $this->isInstanceOf(className: Closure::class));
 
         $this->application
-            ->expects(self::exactly(4))
+            ->expects($this->exactly(4))
             ->method('bind');
 
         $provider = new ServiceProvider($this->application);
@@ -107,7 +91,7 @@ final class ServiceProviderTest extends TestCase
     public function canLoadConfigAtBootingApp(): void
     {
         $this->application
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('configPath')
             ->with('responsefactory.php')
             ->willReturn('my/dir');
