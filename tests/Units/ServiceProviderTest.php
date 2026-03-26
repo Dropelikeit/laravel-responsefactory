@@ -6,7 +6,6 @@ namespace Dropelikeit\ResponseFactory\Tests\Units;
 use Closure;
 use Dropelikeit\ResponseFactory\Contracts\Services\MimeTypeDetector;
 use Dropelikeit\ResponseFactory\Enums\SerializeTypeEnum;
-use Dropelikeit\ResponseFactory\Factories\Http\SerializerFactory;
 use Dropelikeit\ResponseFactory\Http\ResponseFactory;
 use Dropelikeit\ResponseFactory\ServiceProvider;
 use Illuminate\Config\Repository;
