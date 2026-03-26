@@ -6,6 +6,7 @@ namespace Dropelikeit\ResponseFactory\Tests\Units\Transformers;
 use Dropelikeit\ResponseFactory\Dtos\Services\StreamInput;
 use Dropelikeit\ResponseFactory\Transformers\StreamInputToStringTransformer;
 use InvalidArgumentException;
+use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\UsesClass;
@@ -44,7 +45,7 @@ final class StreamInputToStringTransformerTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionCode(0);
-        $this->expectExceptionMessage('Expected a different value than "".');
+        $this->expectExceptionMessage('Expected a value not identical to "".');
 
         $this->stream
             ->expects($this->once())

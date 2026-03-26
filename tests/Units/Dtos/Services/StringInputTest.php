@@ -25,7 +25,7 @@ final class StringInputTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionCode(0);
-        $this->expectExceptionMessage('Expected a different value than "".');
+        $this->expectExceptionMessage('Expected a value not identical to "".');
 
         StringInput::create('');
     }
