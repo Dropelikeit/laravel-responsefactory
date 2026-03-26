@@ -48,9 +48,6 @@ jobs:
       - name: "Validate composer.json and composer.lock"
         run: "composer validate --strict"
 
-      - name: "Check if composer.lock is up to date"
-        run: "composer check-platform-reqs"
-
       - name: "Cache composer packages"
         uses: actions/cache@v5
         with:
@@ -63,6 +60,9 @@ jobs:
 
       - name: "Install dependencies with composer"
         run: "composer install --no-interaction --prefer-dist --optimize-autoloader"
+
+      - name: "Check if composer.lock is up to date"
+        run: "composer check-platform-reqs"
 
       - name: "PHP Lint"
         run: "composer lint"
