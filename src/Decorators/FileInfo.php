@@ -16,7 +16,7 @@ final readonly class FileInfo implements MimetypeFromFileInformationDetector
 
     public function __construct()
     {
-        $this->fileInformation = new finfo(FILEINFO_MIME_TYPE);
+        $this->fileInformation = new finfo(flags: FILEINFO_MIME_TYPE);
     }
 
     /**
@@ -25,6 +25,6 @@ final readonly class FileInfo implements MimetypeFromFileInformationDetector
     #[Override]
     public function fetchMimetypeByGivenString(string $content): Mimetype
     {
-        return Mimetype::createFromType($this->fileInformation->buffer($content));
+        return Mimetype::createFromType(mimetype: $this->fileInformation->buffer(string: $content));
     }
 }

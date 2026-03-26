@@ -23,7 +23,7 @@ final readonly class StringInput implements Input
 
     public static function create(string $content): self
     {
-        Assert::stringNotEmpty($content);
+        Assert::stringNotEmpty(value: $content);
 
         return new self(value: $content);
     }

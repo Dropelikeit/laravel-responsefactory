@@ -20,7 +20,7 @@ final readonly class Mimetype
 
     public static function createFromType(string $mimetype): self
     {
-        Assert::stringNotEmpty($mimetype);
+        Assert::stringNotEmpty(value: $mimetype);
 
         return new self(mimetype: $mimetype);
     }

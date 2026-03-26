@@ -5,6 +5,7 @@ namespace Dropelikeit\ResponseFactory\Tests\Units;
 
 use Closure;
 use Dropelikeit\ResponseFactory\Contracts\Services\MimeTypeDetector;
+use Dropelikeit\ResponseFactory\Enums\SerializeTypeEnum;
 use Dropelikeit\ResponseFactory\Http\ResponseFactory;
 use Dropelikeit\ResponseFactory\ServiceProvider;
 use Illuminate\Config\Repository;
@@ -42,7 +43,7 @@ final class ServiceProviderTest extends TestCase
             ->method('set')
             ->with('responsefactory', [
                 'serialize_null' => true,
-                'serialize_type' => 'json', // Contracts\Config::SERIALIZE_TYPE_XML
+                'serialize_type' => 'json',
                 'debug' => false,
                 'add_default_handlers' => true,
                 'custom_handlers' => [],
@@ -51,7 +52,7 @@ final class ServiceProviderTest extends TestCase
         $this->configRepository
             ->expects($this->exactly(6))
             ->method('get')
-            ->willReturnOnConsecutiveCalls([], true, 'json', false, true, []);
+            ->willReturnOnConsecutiveCalls([], true, SerializeTypeEnum::JSON->value, false, true, []);
 
         $this->application
             ->expects($this->once())
@@ -60,7 +61,7 @@ final class ServiceProviderTest extends TestCase
             ->willReturn($this->configRepository);
 
         $this->application
-            ->expects($this->exactly(1))
+            ->expects($this->once())
             ->method('get')
             ->willReturnOnConsecutiveCalls($this->configRepository, $this->mimetypeDetector);
 

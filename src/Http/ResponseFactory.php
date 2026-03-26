@@ -10,13 +10,13 @@ use Dropelikeit\ResponseFactory\Contracts\Http\Code;
 use Dropelikeit\ResponseFactory\Contracts\Http\Header;
 use Dropelikeit\ResponseFactory\Contracts\Http\ResponseFactory as ResponseFactoryContract;
 use Dropelikeit\ResponseFactory\Contracts\Services\MimeTypeDetector as MimeTypeDetectorContract;
-use Dropelikeit\ResponseFactory\Exceptions\SerializeType;
+use Dropelikeit\ResponseFactory\Enums\SerializeTypeEnum;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response as LaravelResponse;
-use function in_array;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
 use Override;
+use function sprintf;
 use Symfony\Component\HttpFoundation\Response;
 use Webmozart\Assert\Assert;
 
@@ -27,10 +27,7 @@ final class ResponseFactory implements ResponseFactoryContract
 {
     private const string CONTENT_DISPOSITION_HEADER_FORMAT = '%s; %s="%s";';
 
-    /**
-     * @psalm-var Configuration::SERIALIZE_TYPE_*
-     */
-    private string $serializeType;
+    private SerializeTypeEnum $serializeType;
 
     /**
      * @psalm-var Code::HTTP_CODE_*
@@ -64,17 +61,14 @@ final class ResponseFactory implements ResponseFactoryContract
     }
 
     #[Override]
-    public function withSerializeType(string $serializeType): ResponseFactoryContract
+    public function withSerializeType(SerializeTypeEnum $serializeType): ResponseFactoryContract
     {
-        if (!in_array($serializeType, [
-            Configuration::SERIALIZE_TYPE_JSON,
-            Configuration::SERIALIZE_TYPE_XML
-        ], true)) {
-            /** @psalm-suppress NoValue */
-            throw SerializeType::fromUnsupportedSerializeType($serializeType);
-        }
+        $instance = new self(
+            serializer: $this->serializer,
+            config: $this->config,
+            fileInformationDetector: $this->fileInformationDetector
+        );
 
-        $instance = new self($this->serializer, $this->config, $this->fileInformationDetector);
         $instance->serializeType = $serializeType;
 
         return $instance;
@@ -83,26 +77,30 @@ final class ResponseFactory implements ResponseFactoryContract
     #[Override]
     public function create(object $jmsResponse): Response
     {
-        $initialType = $this->getInitialType($jmsResponse);
+        $initialType = $this->getInitialType(jmsResponse: $jmsResponse);
 
         $content = $this->serializer->serialize(
-            $jmsResponse,
-            $this->serializeType,
-            $this->context,
-            $initialType
+            data: $jmsResponse,
+            format: $this->serializeType->value,
+            context: $this->context,
+            type: $initialType
         );
-        Assert::stringNotEmpty($content);
+        Assert::stringNotEmpty(value: $content);
 
-        return $this->getResponse($content);
+        return $this->getResponse(content: $content);
     }
 
     #[Override]
     public function createFromArray(array $jmsResponse): Response
     {
-        $content = $this->serializer->serialize($jmsResponse, $this->serializeType, $this->context);
-        Assert::stringNotEmpty($content);
+        $content = $this->serializer->serialize(
+            data: $jmsResponse,
+            format: $this->serializeType->value,
+            context: $this->context
+        );
+        Assert::stringNotEmpty(value: $content);
 
-        return $this->getResponse($content);
+        return $this->getResponse(content: $content);
     }
 
     #[Override]
@@ -117,9 +115,9 @@ final class ResponseFactory implements ResponseFactoryContract
     #[Override]
     public function createByFile(Input $input, string $filename): Response
     {
-        $mimetype = $this->fileInformationDetector->detect($input);
+        $mimetype = $this->fileInformationDetector->detect(toDetect: $input);
 
-        return new Response($input->getValue(), Code::HTTP_CODE_OK, headers: [
+        return new Response(content: $input->getValue(), status: Code::HTTP_CODE_OK, headers: [
             Header::HEADER_CONTENT_TYPE => $mimetype,
             Header::HEADER_CONTENT_ENCODING => Header::HEADER_CONTENT_ENCODING_BINARY,
             Header::HEADER_CONTENT_DISPOSITION => sprintf(
@@ -145,7 +143,7 @@ final class ResponseFactory implements ResponseFactoryContract
      */
     private function getResponse(string $content): Response
     {
-        if ($this->serializeType === Configuration::SERIALIZE_TYPE_XML) {
+        if ($this->serializeType === SerializeTypeEnum::XML) {
             return new LaravelResponse(
                 content: $content,
                 status: $this->status,
