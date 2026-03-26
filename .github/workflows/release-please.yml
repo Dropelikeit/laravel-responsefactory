@@ -26,21 +26,21 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const requiredWorkflows = ['App tester', 'Test Coveralls'];
+            const requiredWorkflows = ['app-tester.yml', 'coveralls.yml'];
             const head_sha = context.payload.workflow_run.head_sha;
 
-            for (const workflowName of requiredWorkflows) {
+            for (const workflowFile of requiredWorkflows) {
               const runs = await github.rest.actions.listWorkflowRuns({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                workflow_id: workflowName,
+                workflow_id: workflowFile,
                 head_sha: head_sha,
                 status: 'completed',
               });
 
               const successRun = runs.data.workflow_runs.find(r => r.conclusion === 'success');
               if (!successRun) {
-                core.setFailed(`Workflow "${workflowName}" has not succeeded for commit ${head_sha}`);
+                core.setFailed(`Workflow "${workflowFile}" has not succeeded for commit ${head_sha}`);
                 return;
               }
             }
