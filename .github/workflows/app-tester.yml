@@ -85,3 +85,42 @@ jobs:
 
       - name: "Run infection"
         run: "composer infection-ci"
+
+  php85:
+    name: PHP 8.5
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v6"
+        with:
+          fetch-depth: 2
+
+      - name: "Install PHP 8.5"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          php-version: "8.5"
+
+      - name: "Cache composer packages"
+        uses: "actions/cache@v5"
+        with:
+          path: "vendor"
+          key: "php-composer-locked-php-8.5-${{ hashFiles('**/composer.lock') }}"
+          restore-keys: "php-composer-locked-php-8.5-"
+
+      - name: "Install dependencies with composer"
+        run: "composer install --no-interaction --prefer-dist"
+
+      - name: "Run PHPUnit Tests"
+        run: "composer test-coverage"
+
+      - name: "Run PHP CS Check"
+        run: "composer cs-check"
+
+      - name: "Run Psalm"
+        run: "composer psalm"
+
+      - name: "PHP Lint"
+        run: "composer lint"
+
+      - name: "Run infection"
+        run: "composer infection-ci"
