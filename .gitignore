@@ -7,3 +7,4 @@ tmp
 build
 tests/Features/data
 tests/Units/Http/metadata
+.php-cs-fixer.cache

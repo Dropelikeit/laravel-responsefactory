@@ -1,0 +1,104 @@
+# ============================================================
+# Area Labels (src/)
+# ============================================================
+"area:configuration":
+  - changed-files:
+      - any-glob-to-any-file: 'src/Configuration/**'
+
+"area:contracts":
+  - changed-files:
+      - any-glob-to-any-file: 'src/Contracts/**'
+
+"area:decorators":
+  - changed-files:
+      - any-glob-to-any-file: 'src/Decorators/**'
+
+"area:dtos":
+  - changed-files:
+      - any-glob-to-any-file: 'src/Dtos/**'
+
+"area:enums":
+  - changed-files:
+      - any-glob-to-any-file: 'src/Enums/**'
+
+"area:exceptions":
+  - changed-files:
+      - any-glob-to-any-file: 'src/Exceptions/**'
+
+"area:factories":
+  - changed-files:
+      - any-glob-to-any-file: 'src/Factories/**'
+
+"area:http":
+  - changed-files:
+      - any-glob-to-any-file: 'src/Http/**'
+
+"area:services":
+  - changed-files:
+      - any-glob-to-any-file: 'src/Services/**'
+
+"area:transformers":
+  - changed-files:
+      - any-glob-to-any-file: 'src/Transformers/**'
+
+"area:service-provider":
+  - changed-files:
+      - any-glob-to-any-file: 'src/ServiceProvider.php'
+
+# ============================================================
+# Project Area Labels
+# ============================================================
+"area:tests":
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'tests/**'
+          - 'phpunit.xml.dist'
+          - 'infection.json5'
+
+"area:docs":
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'docs/**'
+          - '**/*.md'
+          - 'LICENSE'
+
+"area:config":
+  - changed-files:
+      - any-glob-to-any-file: 'config/**'
+
+"area:ci":
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.github/**'
+          - '.php-cs-fixer*'
+          - 'psalm.xml'
+
+"area:dependencies":
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'composer.json'
+          - 'composer.lock'
+
+"area:release":
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'release-please-config.json'
+          - '.release-please-manifest.json'
+          - 'version.txt'
+
+# ============================================================
+# Language Labels
+# ============================================================
+"lang:php":
+  - changed-files:
+      - any-glob-to-any-file: '**/*.php'
+
+"lang:yaml":
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/*.yml'
+          - '**/*.yaml'
+
+"lang:shell":
+  - changed-files:
+      - any-glob-to-any-file: '**/*.sh'

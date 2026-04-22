@@ -1,0 +1,28 @@
+name: Auto Assign PR Creator
+
+on:
+  pull_request:
+    types: [opened, reopened]
+
+jobs:
+  assign:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/github-script@v8
+        with:
+          script: |
+            const { login, type } = context.payload.pull_request.user;
+            if (type !== 'Bot') {
+              try {
+                await github.rest.issues.addAssignees({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.payload.pull_request.number,
+                  assignees: [login]
+                });
+              } catch (error) {
+                console.log(`Skipping assignment for ${login}: ${error.message}`);
+              }
+            }
